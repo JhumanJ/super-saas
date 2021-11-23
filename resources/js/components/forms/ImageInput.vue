@@ -1,0 +1,200 @@
+<template>
+  <div class="relative mb-3">
+    <label v-if="label" class="text-gray-700 dark:text-gray-300 font-bold"
+           :class="{'uppercase text-xs':uppercaseLabels, 'text-sm':!uppercaseLabels}"
+    >
+      {{ label }}
+      <span v-if="required" class="text-red-500 required-dot">*</span>
+    </label>
+    <span class="inline-block w-full rounded-md shadow-sm">
+      <button type="button" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label"
+              class="cursor-pointer relative w-full rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-600 shadow-sm text-base focus:outline-none focus:ring-2 focus:border-transparent"
+              :style="inputStyle" @click.prevent="showUploadModal=true"
+      >
+        <div v-if="currentUrl==null" class="h-6 text-gray-600 dark:text-gray-400">
+          Upload image <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+            />
+          </svg>
+        </div>
+        <div v-else class="h-6 text-gray-600 dark:text-gray-400 flex">
+          <div class="flex-grow">
+            <img :src="currentUrl" class="h-6 rounded shadow-md">
+          </div>
+          <a href="#" class="hover:text-nt-blue flex" @click.prevent="clearUrl">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                 stroke="currentColor"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              />
+            </svg></a>
+        </div>
+      </button>
+    </span>
+    <small v-if="help" class="text-gray-400 dark:text-gray-500" v-text="help" />
+    <has-error :form="form" :field="name" />
+
+    <!--  Modal  -->
+    <modal :show="showUploadModal" @close="showUploadModal=false">
+      <h2 class="text-lg font-semibold">
+        Upload an image
+      </h2>
+
+      <div class="max-w-3xl mx-auto lg:max-w-none">
+        <div class="sm:mt-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:items-start sm:pt-5">
+          <div class="mt-2 sm:mt-0 sm:col-span-2 mb-5">
+            <div
+              v-cloak
+              class="w-full flex justify-center items-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md h-128"
+              @dragover.prevent="onUploadDragoverEvent($event)"
+              @drop.prevent="onUploadDropEvent($event)"
+            >
+              <div v-if="loading" class="text-gray-600 dark:text-gray-400">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 animate-spin mx-auto m-10" fill="none"
+                     viewBox="0 0 24 24"
+                     stroke="currentColor"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                  />
+                </svg>
+                <p class="text-center mt-6">
+                  Uploading your file...
+                </p>
+              </div>
+              <template v-else>
+                <div
+                  class="absolute rounded-full bg-gray-100 h-20 w-20 z-10 transition-opacity duration-500 ease-in-out"
+                  :class="{
+                    'opacity-100': uploadDragoverTracking,
+                    'opacity-0': !uploadDragoverTracking
+                  }"
+                />
+                <div class="relative z-20 text-center">
+                  <input ref="actual-input" class="hidden" type="file" :name="name"
+                         accept="image/png, image/gif, image/jpeg, image/bmp" @change="manualFileUpload"
+                  >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-24 w-24 text-gray-200" fill="none"
+                       viewBox="0 0 24 24" stroke="currentColor"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                    />
+                  </svg>
+                  <p class="mt-5 text-sm text-gray-600">
+                    <button
+                      type="button"
+                      class="font-semibold text-nt-blue hover:text-nt-blue-dark focus:outline-none focus:underline transition duration-150 ease-in-out"
+                      @click="openFileUpload"
+                    >
+                      Upload your image
+                    </button>
+                    or drag and drop
+                  </p>
+                  <p class="mt-1 text-xs text-gray-500">
+                    .jpg, .jpeg, .png, .bmp, .gif up to 5mb
+                  </p>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+      </div>
+    </modal>
+  </div>
+</template>
+
+<script>
+import Modal from '../Modal'
+import Form from 'vform'
+
+export default {
+  name: 'ImageInput',
+  components: { Modal },
+  props: {
+    endpoint: { type: String, required: true },
+    label: { type: String, default: null },
+    help: { type: String, default: null },
+    required: { type: Boolean, default: false },
+    form: { type: Object, required: true },
+    name: { type: String, required: true },
+    placeholder: { type: String, default: null },
+    color: { type: String, default: '#3B82F6' },
+    uppercaseLabels: { type: Boolean, default: true }
+  },
+
+  data: () => ({
+    showUploadModal: false,
+
+    file: [],
+    uploadDragoverTracking: false,
+    uploadDragoverEvent: false,
+    loading: false
+  }),
+
+  computed: {
+    inputStyle () {
+      return {
+        '--tw-ring-color': this.color
+      }
+    },
+    currentUrl () {
+      return this.form[this.name]
+    }
+  },
+
+  watch: {},
+
+  created () {
+  },
+
+  methods: {
+    clearUrl () {
+      this.$set(this.form, this.name, null)
+    },
+    onUploadDragoverEvent (e) {
+      this.uploadDragoverEvent = true
+      this.uploadDragoverTracking = true
+    },
+    onUploadDropEvent (e) {
+      this.uploadDragoverEvent = false
+      this.uploadDragoverTracking = false
+      this.droppedFiles(e)
+    },
+    droppedFiles (e) {
+      const droppedFiles = e.dataTransfer.files
+
+      if (!droppedFiles) return
+
+      this.file = droppedFiles[0]
+      this.uploadFileToServer()
+    },
+    openFileUpload () {
+      this.$refs['actual-input'].click()
+    },
+    manualFileUpload (e) {
+      this.file = e.target.files[0]
+      this.uploadFileToServer()
+    },
+    uploadFileToServer () {
+      const assetForm = new Form({
+        asset: this.file
+      })
+      this.loading = true
+      assetForm.post(this.endpoint).then((response) => {
+        this.$set(this.form, this.name, response.data.url)
+        this.showUploadModal = false
+        this.loading = false
+      }).catch((error) => {
+        this.$set(this.form, this.name, null)
+        this.showUploadModal = false
+        this.loading = false
+      })
+    }
+  }
+}
+</script>
