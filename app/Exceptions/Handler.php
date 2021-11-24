@@ -49,10 +49,7 @@ class Handler extends ExceptionHandler
 
     public function report(Throwable $exception)
     {
-        if ($exception instanceof NotionException) {
-            // Notify owner
-            event(new NotionConnectionError(request(), $exception));
-        } elseif (app()->bound('sentry') && $this->shouldReport($exception)) {
+        if (app()->bound('sentry') && $this->shouldReport($exception)) {
             app('sentry')->captureException($exception);
         }
 
@@ -61,40 +58,6 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $e)
     {
-        if ($e instanceof NotionException) {
-            if (NotifyOnConnectionError::shouldHandle($e)) {
-                if (request()->routeIs('forms.answer')) {
-                    return response()->json([
-                        'type' => 'success',
-                        'message' => 'Form submission saved.'
-                    ], 200);
-                } else {
-                    if ( request()->routeIs('notion.workspaces.databases.show') &&
-                        str_contains($e->getMessage(),NotifyOnConnectionError::NOTION_ERROR_NOT_FOUND)
-                    ) {
-                        return response()->json([
-                            'type' => 'not_found',
-                            'message' => 'We could not find your Notion table.'
-                        ], 404);
-                    }
-
-                    Log::channel('slack')->error($e);
-                    return response()->json([
-                        'type' => 'notion_error',
-                        'message' => 'Could not connect to notion workspace.'
-                    ], 433);
-                }
-            }
-        }
-
-        if ($this->shouldReport($e)) {
-            Log::channel('slack')->error($e);
-
-            if ($e instanceof LaravelNotionAPIException) {
-                Log::channel('slack')->error($e->getPayload());
-            }
-        }
-
         return parent::render($request, $e);
     }
 }
