@@ -32,11 +32,6 @@
                   Product Updates
                 </a>
               </li>
-              <li>
-                <router-link :to="{name:'partners'}" class="text-gray-600 dark:text-gray-400 transition-colors duration-300 hover:text-nt-blue">
-                  Our Partners
-                </router-link>
-              </li>
             </ul>
           </div>
           <div>

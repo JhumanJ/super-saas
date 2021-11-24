@@ -104,9 +104,8 @@
               <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" class="w-3 h-3" viewBox="0 0 24 24">
                 <path d="M20 6L9 17l-5-5" />
               </svg>
-            </span><router-link class="mr-2 underline text-white" :to="{name:'integrations'}">
-              Multiple Integrations
-            </router-link>
+            </span>
+            Multiple Integrations
           </p>
           <p class="flex items-center mb-2 text-base font-medium leading-relaxed text-white">
             <span class="inline-flex items-center justify-center flex-shrink-0 w-5 h-5 mr-2  rounded-full text-blue-500 bg-white">
