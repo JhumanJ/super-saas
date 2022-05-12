@@ -5,14 +5,18 @@ import * as types from '../mutation-types'
 // state
 export const state = {
   user: null,
-  token: Cookies.get('token')
+  token: Cookies.get('token'),
+
+  // For admin impersonation
+  admin_token: Cookies.get('admin_token') ?? null
 }
 
 // getters
 export const getters = {
   user: state => state.user,
   token: state => state.token,
-  check: state => state.user !== null
+  check: state => state.user !== null,
+  isImpersonating: state => state.admin_token !== null
 }
 
 // mutations
@@ -40,6 +44,19 @@ export const mutations = {
 
   [types.UPDATE_USER] (state, { user }) {
     state.user = user
+  },
+
+  // Stores admin token temporarily for impersonation
+  startImpersonating (state) {
+    state.admin_token = state.token
+    Cookies.set('admin_token', state.token, { expires: 365 })
+  },
+
+  // Stores admin token temporarily for impersonation
+  stopImpersonating (state) {
+    state.token = state.admin_token
+    state.admin_token = null
+    Cookies.remove('admin_token')
   }
 }
 
@@ -76,5 +93,11 @@ export const actions = {
     const { data } = await axios.post(`/api/oauth/${provider}`)
 
     return data.url
+  },
+
+  // Reverse admin impersonation
+  stopImpersonating ({ commit, dispatch }, payload) {
+    commit('stopImpersonating')
+    return dispatch('fetchUser')
   }
 }

@@ -8,6 +8,7 @@
       <component :is="layout" v-if="layout" />
     </transition>
     <portal-target name="modals" multiple />
+    <stop-impersonation />
   </div>
 </template>
 
@@ -15,6 +16,7 @@
 import Loading from './Loading'
 import { mapState } from 'vuex'
 import Hotjar from './service/Hotjar'
+import StopImpersonation from "./pages/StopImpersonation";
 
 // Load layout components dynamically.
 const requireContext = require.context('~/layouts', false, /.*\.vue$/)
@@ -32,6 +34,7 @@ export default {
   el: '#app',
 
   components: {
+    StopImpersonation,
     Hotjar,
     Loading
   },

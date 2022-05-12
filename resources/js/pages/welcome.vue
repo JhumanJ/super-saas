@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="mt-6 flex flex-col">
-      <div class="w-full dark:bg-notion-dark-light">
+      <div class="w-full dark:bg-gray-800">
         <hero/>
-        <div class="bg-white w-full dark:bg-notion-dark relative">
+        <div class="bg-white w-full dark:bg-gray-800 relative">
           <div class="z-10 w-full md:max-w-3xl md:mx-auto px-4 flex flex-wrap pb-10">
             <h3 class="mb-4 text-sm font-semibold tracking-widest uppercase title-font w-full text-center">
               People from the world best organizations use <span class="text-nt-blue text-uppercase">{{title}}</span>
@@ -32,7 +32,7 @@
           </div>
         </div>
 
-        <div class="bg-gray-50 dark:bg-notion-dark-light">
+        <div class="bg-gray-50 dark:bg-gray-800">
           <div class="w-full md:max-w-4xl md:mx-auto px-4 flex flex-wrap">
             <features class="pt-16 pb-8" />
             <p class="text-center w-full mb-8 font-semibold">
@@ -49,7 +49,7 @@
           </div>
         </div>
 
-        <div class="bg-gradient-to-r from-blue-400 to-blue-600 dark:bg-notion-dark-light py-16 transform skew-y-2">
+        <div class="bg-gradient-to-r from-blue-400 to-blue-600 dark:bg-gray-800 py-16 transform skew-y-2">
           <div class="w-full md:max-w-4xl md:mx-auto px-4 flex flex-wrap transform -skew-y-2">
             <div class="text-white text-center">
               <h3 class="text-white text-center text-2xl font-semibold">
@@ -73,12 +73,12 @@
           </div>
         </div>
 
-        <div class="bg-gray-50 dark:bg-notion-dark-light pt-10 -mt-10">
+        <div class="bg-gray-50 dark:bg-gray-800 pt-10 -mt-10">
           <div class="w-full md:max-w-3xl md:mx-auto px-4 flex flex-wrap mb-10">
             <how-to class="px-4 md:px-0 mt-20" />
           </div>
         </div>
-        <div class="w-full dark:bg-notion-dark p-10">
+        <div class="w-full dark:bg-gray-800 p-10">
           <div class="md:max-w-5xl md:mx-auto flex flex-wrap">
             <pricing-block />
           </div>

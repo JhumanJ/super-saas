@@ -270,7 +270,7 @@
               </svg>
               <span class="relative">Do</span>
             </span>
-            even more with NotionForms <span v-if="!user.has_enterprise_subscription" class="text-nt-blue">Pro</span><span v-else class="text-nt-blue">Enterprise</span>
+            even more with our <span v-if="!user.has_enterprise_subscription" class="text-nt-blue">Pro</span><span v-else class="text-nt-blue">Enterprise</span> plan
           </h2>
           <h4 class="text-center mt-5 text-xl leading-9">
             We're happy to have you as a <span v-if="!user.has_enterprise_subscription">Pro</span><span v-else>Enterprise</span> subscriber. If you're having any issue with NotionForms, or if you have a
@@ -282,7 +282,7 @@
         <div v-if="!authenticated" class="w-full mt-16 text-center">
           <h2>Create your first Form <span class="text-nt-blue">now</span></h2>
           <h4 class="my-5 text-xl">
-            NotionForms is the best and easiest solution to create forms for Notion users. You don't need take our word
+            Our product is the best and easiest solution to create stuff for your users. You don't need take our word
             for it, just try for free!
           </h4>
           <fancy-link :to="{name:'register'}">
@@ -312,7 +312,7 @@ export default {
 
   props: {
     metaTitle: { type: String, default: 'Pricing' },
-    metaDescription: { type: String, default: 'All of our core features are free, and there is no quantity limit. You can also created more advanced and customized forms with NotionForms Pro.' }
+    metaDescription: { type: String, default: 'All of our core features are free, and there is no quantity limit. You can also created more advanced and customized features with our Pro Plan.' }
   },
 
   data: () => ({

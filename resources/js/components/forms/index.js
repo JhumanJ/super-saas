@@ -13,9 +13,9 @@ import ColorInput from './ColorInput'
 import RichTextAreaInput from './RichTextAreaInput'
 import FileInput from './FileInput'
 import ImageInput from './ImageInput'
-import DateInput from './DateInput';
+import DateInput from './DateInput'
 
-// Components that are registered globaly.
+// Components that are registered globally.
 [
   HasError,
   AlertError,

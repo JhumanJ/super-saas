@@ -1,5 +1,6 @@
 import Vue from 'vue'
 
+import Loader from './Loader'
 import Dropdown from './Dropdown'
 import Card from './Card'
 import Button from './Button'
@@ -9,7 +10,8 @@ import FancyLink from './FancyLink';
   FancyLink,
   Card,
   Button,
-  Dropdown
+  Dropdown,
+  Loader
 ].forEach(Component => {
   Vue.component(Component.name, Component)
 })

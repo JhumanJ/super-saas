@@ -1,5 +1,5 @@
 <template>
-  <card :title="$t('your_password')" class="bg-gray-50 dark:bg-notion-dark-light">
+  <card :title="$t('your_password')" class="bg-gray-50 dark:bg-gray-800">
     <form @submit.prevent="update" @keydown="form.onKeydown($event)">
       <alert-success class="mb-5" :form="form" :message="$t('password_updated')" />
 

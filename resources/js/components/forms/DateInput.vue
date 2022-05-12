@@ -1,57 +1,55 @@
 <template>
-  <div class="relative mb-3">
-    <label v-if="label" :for="id?id:name" class="text-gray-700 dark:text-gray-300 font-bold"
-           :class="{'uppercase text-xs':uppercaseLabels, 'text-sm':!uppercaseLabels}"
+  <div class="relative" :class="marginBottom">
+    <label v-if="label" :for="id?id:name"
+           :class="[theme.default.label,{'uppercase text-xs':uppercaseLabels, 'text-sm':!uppercaseLabels}]"
     >
       {{ label }}
       <span v-if="required" class="text-red-500 required-dot">*</span>
     </label>
-    <t-datepicker :id="id?id:name" v-model="form[name]" class="datepicker" :disabled="disabled"
-                  :class="{ 'ring-red-500 ring-2': validation && form.errors.has(name), 'cursor-not-allowed bg-gray-200':disabled }"
-                  :style="inputStyle" :name="name" :accept="accept"
-                  :placeholder="placeholder" :timepicker="withTime" date-format="Z" :user-format="withTime?'F j, Y - H:i':'F j, Y'"
+    <t-datepicker :id="id?id:name" v-model="compVal" class="datepicker" :disabled="disabled"
+                  :style="inputStyle" :name="name" :accept="accept" :fixed-classes="componentClasses"
+                  :placeholder="placeholder" :timepicker="withTime" date-format="Z"
+                  :user-format="withTime?'F j, Y - H:i':'F j, Y'"
     />
-    <small v-if="help" class="text-gray-400 dark:text-gray-500" v-text="help" />
-    <has-error v-if="validation" :form="form" :field="name" />
+    <small v-if="help" :class="theme.default.help" v-text="help"/>
+    <has-error v-if="form" :form="form" :field="name"/>
   </div>
 </template>
 
 <script>
+import {fixedClasses} from '../../plugins/config/vue-tailwind/datePicker'
+import inputMixin from '~/mixins/forms/input'
+
 export default {
   name: 'DateInput',
+  mixins: [inputMixin],
 
   props: {
-    id: { type: String, default: null },
-    name: { type: String, required: true },
-    label: { type: String, required: false },
-    form: { type: Object, required: true },
-    validation: { type: Boolean, default: true }, // If form is not really a form
-    required: { type: Boolean, default: false },
-    disabled: { type: Boolean, default: false },
-    withTime: { type: Boolean, default: false },
-    uppercaseLabels: { type: Boolean, default: true },
-    placeholder: { type: String, default: null },
-    accept: { type: String, default: null },
-    help: { type: String, default: null },
-    color: { type: String, default: '#3B82F6' }
+    withTime: {type: Boolean, default: false},
+    accept: {type: String, default: null},
   },
 
-  data: () => ({}),
+  data: () => ({
+  }),
 
   computed: {
-    inputStyle () {
-      return {
-        '--tw-ring-color': this.color
+    componentClasses () {
+      const classes = {...fixedClasses}
+      classes.input = this.theme.default.input
+      if (this.form && this.form.errors.has(this.name)) {
+        classes.input = classes.input + ' ring-red-500 ring-2'
       }
-    },
-    formType () {
-      return typeof this.form
+      if (this.disabled) {
+        classes.input = classes.input + ' cursor-not-allowed bg-gray-200'
+      }
+
+      return classes
     }
   },
 
   watch: {},
 
-  created () {},
+  mounted() {},
 
   methods: {
     /**
@@ -59,7 +57,7 @@ export default {
      * @param event
      * @returns {boolean}
      */
-    onEnterPress (event) {
+    onEnterPress(event) {
       event.preventDefault()
       return false
     }

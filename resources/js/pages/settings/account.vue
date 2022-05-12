@@ -1,5 +1,5 @@
 <template>
-  <card title="Account" class="bg-gray-50 dark:bg-notion-dark-light">
+  <card title="Account" class="bg-gray-50 dark:bg-gray-800">
     <h3 class="text-lg font-semibold mb-4">
       Your Account
     </h3>

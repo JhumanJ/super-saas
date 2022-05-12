@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full bg-gray-50 dark:bg-notion-dark p-10">
+  <div class="w-full bg-gray-50 dark:bg-gray-800 p-10">
     <div class="px-4 py-6 w-full md:max-w-3xl md:mx-auto md:px-24 lg:px-8">
       <div class="flex flex-wrap">
         <div class="md:max-w-md lg:col-span-2 mr-2 pr-2">

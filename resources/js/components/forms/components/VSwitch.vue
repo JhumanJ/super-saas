@@ -6,8 +6,8 @@
         duration: 150,
       }"
       :trigger="[
-        'bg-gray-200 border-gray-300 duration-100',
-        'bg-gray-200',
+        'bg-gray-200 border-gray-300 duration-100 dark:bg-gray-700 dark:border-gray-600',
+        'bg-gray-200 dark:bg-gray-700',
         'bg-nt-blue border-nt-blue',
         'bg-nt-blue duration-100',
       ]"
@@ -26,7 +26,7 @@
           'translate-x-6 duration-100',
           'scale-100 duration-150',
         ]"
-        class="inline-block h-4 w-4 rounded-full bg-white shadow"
+        class="inline-block h-4 w-4 rounded-full bg-white dark:bg-gray-500 shadow"
       />
     </Motion>
   </div>

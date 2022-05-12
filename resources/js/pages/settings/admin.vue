@@ -1,5 +1,5 @@
 <template>
-  <card title="Admin" class="bg-gray-50 dark:bg-notion-dark-light">
+  <card title="Admin" class="bg-gray-50 dark:bg-gray-800">
     <h3 class="text-lg font-semibold mb-4">
       Tools
     </h3>
@@ -26,7 +26,7 @@
     <form @submit.prevent="impersonate" @keydown="form.onKeydown($event)">
       <!-- Password -->
       <text-input name="identifier" :form="form" label="Identifier"
-                  :required="true" help="User Id, User Email or Form Slug"
+                  :required="true" help="User Id or Email"
       />
 
       <!-- Submit Button -->
@@ -61,14 +61,15 @@ export default {
   methods: {
     async impersonate () {
       this.loading = true
+      this.$store.commit('auth/startImpersonating')
       axios.get('/api/admin/impersonate/' + encodeURI(this.form.identifier)).then(async (response) => {
-        this.loading = false
-
         // Save the token.
         this.$store.dispatch('auth/saveToken', {
           token: response.data.token,
           remember: false
         })
+
+        this.loading = false
 
         // Fetch the user.
         await this.$store.dispatch('auth/fetchUser')

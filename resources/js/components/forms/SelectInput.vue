@@ -1,11 +1,11 @@
 <template>
-  <div class="relative mb-3">
-    <v-select v-model="form[name]"
+  <div class="relative" :class="marginBottom">
+    <v-select v-model="compVal"
               :dusk="name"
               :data="options"
               :label="label"
               :option-key="optionKey"
-              :emit-key="emitKey"
+              :emit-key="optionKey"
               :required="required"
               :multiple="multiple"
               :searchable="searchable"
@@ -13,6 +13,8 @@
               :color="color"
               :placeholder="placeholder"
               :uppercase-labels="uppercaseLabels"
+              :theme="theme"
+              :emptyable="emptyable"
     >
       <template #selected="{option}">
         <template v-if="multiple">
@@ -49,34 +51,30 @@
         </slot>
       </template>
     </v-select>
-    <small v-if="help" class="text-gray-400 dark:text-gray-500" v-text="help" />
-    <has-error v-if="validation" :form="form" :field="name" />
+    <small v-if="help" :class="theme.SelectInput.help" v-text="help" />
+    <has-error v-if="form" :form="form" :field="name" />
   </div>
 </template>
 
 <script>
+import inputMixin from '~/mixins/forms/input'
+
 /**
  * Options: {name,value} objects
  */
 export default {
   name: 'SelectInput',
+  mixins: [inputMixin],
 
   props: {
     options: { type: Array, required: true },
     optionKey: { type: String, default: 'value' },
+    displayKey: { type: String, default: 'name' },
     emitKey: { type: String, default: 'value' },
-    label: { type: String, default: null },
-    help: { type: String, default: null },
     loading: { type: Boolean, default: false },
-    required: { type: Boolean, default: false },
     multiple: { type: Boolean, default: false },
     searchable: { type: Boolean, default: false },
-    validation: { type: Boolean, default: true }, // If form is not really a form
-    form: { type: Object, required: true },
-    name: { type: String, required: true },
-    placeholder: { type: String, default: null },
-    color: { type: String, default: '#3B82F6' },
-    uppercaseLabels: { type: Boolean, default: true }
+    emptyable: { type: Boolean, default: false }
   },
 
   data: () => ({}),
@@ -87,9 +85,11 @@ export default {
 
   methods: {
     getOptionName (val) {
-      return this.options.find((option) => {
-        return option.value === val
-      }).name
+      const option = this.options.find((option) => {
+        return option[this.optionKey] === val
+      })
+      if (option) return option[this.displayKey]
+      return null
     }
   }
 }

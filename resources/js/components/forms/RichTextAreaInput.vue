@@ -1,34 +1,32 @@
 <template>
-  <div class="relative mb-3">
-    <label v-if="label" :for="id?id:name" class="text-gray-700 dark:text-gray-300 font-bold"
-           :class="{'uppercase text-xs':uppercaseLabels, 'text-sm':!uppercaseLabels}"
+  <div class="relative" :class="marginBottom">
+    <label v-if="label" :for="id?id:name"
+           :class="[theme.RichTextAreaInput.label, {'uppercase text-xs':uppercaseLabels, 'text-sm':!uppercaseLabels}]"
     >
       {{ label }}
       <span v-if="required" class="text-red-500 required-dot">*</span>
     </label>
-    <vue-editor :id="id?id:name" ref="editor" v-model="form[name]" :disabled="disabled"
-                :placeholder="placeholder" :class="{ 'ring-red-500 ring-2': validation && form.errors.has(name) }"
-                :editor-toolbar="editorToolbar" class="rich-editor rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full bg-white text-gray-700 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-500 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:border-transparent resize-y"
+    <vue-editor :id="id?id:name" ref="editor" v-model="compVal" :disabled="disabled"
+                :placeholder="placeholder" :class="[{ 'ring-red-500 ring-2': form && form.errors.has(name) }, theme.RichTextAreaInput.input]"
+                :editor-toolbar="editorToolbar" class="rich-editor resize-y"
                 :style="inputStyle"
     />
 
-    <small v-if="help" class="text-gray-400 dark:text-gray-500" v-text="help" />
-    <has-error v-if="validation" :form="form" :field="name" />
+    <small v-if="help" :class="theme.RichTextAreaInput.help" v-text="help" />
+    <has-error v-if="form" :form="form" :field="name" />
   </div>
 </template>
 
 <script>
-import { VueEditor, Quill } from 'vue2-editor'
+import { VueEditor } from 'vue2-editor'
+import inputMixin from '~/mixins/forms/input'
 
 export default {
   name: 'RichTextAreaInput',
   components: { VueEditor },
+  mixins: [inputMixin],
 
   props: {
-    id: { type: String, default: null },
-    name: { type: String, required: true },
-    label: { type: String, required: false },
-    form: { type: Object, required: true },
     editorToolbar: {
       type: Array,
       default: () => {
@@ -38,25 +36,12 @@ export default {
           [{ list: 'ordered' }, { list: 'bullet' }]
         ]
       }
-    },
-    required: { type: Boolean, default: false },
-    validation: { type: Boolean, default: true }, // If form is not really a form
-    disabled: { type: Boolean, default: false },
-    uppercaseLabels: { type: Boolean, default: true },
-    placeholder: { type: String, default: null },
-    help: { type: String, default: null },
-    color: { type: String, default: '#3B82F6' }
+    }
   },
 
   data: () => ({}),
 
-  computed: {
-    inputStyle () {
-      return {
-        '--tw-ring-color': this.color
-      }
-    }
-  },
+  computed: {},
 
   watch: {},
 

@@ -1,6 +1,6 @@
 <template>
-  <div class="relative mb-3">
-    <input :id="id?id:name" v-model="form[name]" :disabled="disabled"
+  <div class="relative" :class="marginBottom">
+    <input :id="id?id:name" v-model="compVal" :disabled="disabled"
            type="color"
            :name="name"
     >
@@ -8,36 +8,20 @@
       {{ label }}
       <span v-if="required" class="text-red-500 required-dot">*</span>
     </label>
-    <has-error :form="form" :field="name" />
+    <has-error v-if="form" :form="form" :field="name"/>
   </div>
 </template>
 
 <script>
+import inputMixin from '~/mixins/forms/input'
+
 export default {
   name: 'ColorInput',
 
+  mixins: [inputMixin],
+
   props: {
-    id: { type: String, default: null },
-    nativeType: { type: String, default: 'text' },
-    name: { type: String, required: true },
-    label: { type: String, required: false },
-    form: { type: Object, required: true },
-    disabled: { type: Boolean, default: false },
-    required: { type: Boolean, default: false }
+    nativeType: {type: String, default: 'text'},
   },
-
-  data: () => ({}),
-
-  computed: {
-    inputStyle () {
-      return {
-        '--tw-ring-color': this.color
-      }
-    }
-  },
-
-  watch: {},
-
-  created () {}
 }
 </script>

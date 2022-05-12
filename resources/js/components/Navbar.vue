@@ -1,5 +1,5 @@
 <template>
-  <nav v-if="hasNavbar" class="bg-white dark:bg-notion-dark">
+  <nav v-if="hasNavbar" class="bg-white dark:bg-gray-800">
     <div class="max-w-7xl mx-auto px-8">
       <div class="flex items-center justify-between h-16">
         <div class="flex items-center">

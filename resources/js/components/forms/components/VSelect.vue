@@ -1,7 +1,7 @@
 <template>
   <div class="v-select">
-    <label v-if="label" class="text-gray-700 dark:text-gray-300 font-bold"
-           :class="{'uppercase text-xs':uppercaseLabels, 'text-sm':!uppercaseLabels}"
+    <label v-if="label"
+           :class="[theme.SelectInput.label,{'uppercase text-xs':uppercaseLabels, 'text-sm':!uppercaseLabels}]"
     >
       {{ label }}
       <span v-if="required" class="text-red-500 required-dot">*</span>
@@ -10,27 +10,18 @@
     <div v-on-clickaway="closeDropdown"
          class="relative"
     >
-      <span class="inline-block w-full rounded-md shadow-sm">
+      <span class="inline-block w-full rounded-md">
         <button type="button" :dusk="dusk" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label"
-                class="cursor-pointer relative w-full rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full px-4 bg-white text-gray-700 placeholder-gray-400 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-600 shadow-sm text-base focus:outline-none focus:ring-2 focus:border-transparent"
-                :style="inputStyle" :class="{'py-2':!multiple || loading,'py-1': multiple}" @click="openDropdown"
+                class="cursor-pointer"
+                :style="inputStyle" :class="[theme.SelectInput.input,{'py-2':!multiple || loading,'py-1': multiple}]" @click="openDropdown"
         >
           <div :class="{'h-6':!multiple, 'min-h-8':multiple && !loading}">
-            <svg v-if="loading" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-nt-blue animate-spin mx-auto"
-                 fill="none"
-                 viewBox="0 0 24 24"
-                 stroke="currentColor"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-              />
-            </svg>
-            <div v-else-if="value" class="flex" :class="{'min-h-8':multiple}">
+            <loader v-if="loading" class="h-6 w-6 text-nt-blue mx-auto" />
+            <div v-else-if="value !== null && value !== '' && value!==undefined" class="flex" :class="{'min-h-8':multiple}">
               <slot name="selected" :option="value" />
             </div>
-            <slot v-else-if="data.lenght == 0 " name="empty-placeholder" />
             <slot v-else name="placeholder">
-              <div class="text-gray-400 dark:text-gray-500 w-full text-left">
+              <div class="text-gray-400 dark:text-gray-500 w-full text-left" :class="{'py-1':multiple && !loading}">
                 {{ placeholder }}
               </div>
             </slot>
@@ -47,19 +38,11 @@
             class="rounded-md text-base leading-6 shadow-xs overflow-auto focus:outline-none sm:text-sm sm:leading-5 relative"
             :class="{'max-h-42 py-1': !isSearchable,'max-h-48 pb-1': isSearchable}"
         >
-          <div v-if="isSearchable" class="px-2 pt-2 sticky top-0 bg-white z-10">
-            <text-input name="search" :form="form" :validation="false" placeholder="Search..." />
+          <div v-if="isSearchable" class="px-2 pt-2 sticky top-0 bg-white dark:bg-notion-dark-light z-10">
+            <text-input name="search" :form="form" :theme="theme" :validation="false" placeholder="Search..." />
           </div>
           <div v-if="loading" class="w-full py-2 flex justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-nt-blue animate-spin mx-auto"
-                 fill="none"
-                 viewBox="0 0 24 24"
-                 stroke="currentColor"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-              />
-            </svg>
+            <loader v-if="loading" class="h-6 w-6 text-nt-blue mx-auto" />
           </div>
           <template v-if="filteredOptions.length>0">
             <li v-for="item in filteredOptions" :key="item[optionKey]" role="option"
@@ -82,7 +65,8 @@
 import { directive as onClickaway } from 'vue-clickaway'
 import TextInput from '../TextInput'
 import Fuse from 'fuse.js'
-import debounce from 'lodash/debounce'
+import { themes } from '~/config/form-themes'
+import debounce from 'debounce'
 
 export default {
   name: 'VSelect',
@@ -98,6 +82,7 @@ export default {
     loading: { type: Boolean, default: false },
     required: { type: Boolean, default: false },
     multiple: { type: Boolean, default: false },
+    emptyable: { type: Boolean, default: true },
     searchable: { type: Boolean, default: false },
     remote: { type: Function, default: null },
     searchKeys: { type: Array, default: () => ['name'] },
@@ -105,7 +90,8 @@ export default {
     emitKey: { type: String, default: null }, // Key used for emitted value, emit object if null,
     color: { type: String, default: '#3B82F6' },
     placeholder: { type: String, default: null },
-    uppercaseLabels: { type: Boolean, default: true }
+    uppercaseLabels: { type: Boolean, default: true },
+    theme: { type: Object, default: () => themes.default }
   },
   data () {
     return {
@@ -201,7 +187,7 @@ export default {
         emitValue.push(value)
         this.$emit('input', emitValue)
       } else {
-        if (this.value === value) {
+        if (this.value === value && this.emptyable) {
           this.$emit('input', null)
         } else {
           this.$emit('input', value)

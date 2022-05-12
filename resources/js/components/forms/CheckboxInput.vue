@@ -1,38 +1,24 @@
 <template>
-  <div class="relative mb-3">
-    <v-checkbox :id="id?id:name" v-model="form[name]" :disabled="disabled" :name="name" @input="$emit('input',$event)">
+  <div class="relative" :class="marginBottom">
+    <v-checkbox :id="id?id:name" v-model="compVal" :disabled="disabled" :name="name">
       {{ label }}
     </v-checkbox>
-    <small v-if="help" class="text-gray-400 dark:text-gray-500" v-text="help" />
-    <has-error :form="form" :field="name" />
+    <small v-if="help" :class="theme.default.help" v-text="help" />
+    <has-error v-if="form" :form="form" :field="name" />
   </div>
 </template>
 
 <script>
 import VCheckbox from './components/VCheckbox'
+import inputMixin from '~/mixins/forms/input'
+
 export default {
   name: 'CheckboxInput',
+  mixins: [inputMixin],
   components: { VCheckbox },
-  props: {
-    id: { type: String, default: null },
-    name: { type: String, required: true },
-    label: { type: String, required: true },
-    form: { type: Object, required: true },
-    disabled: { type: Boolean, default: false },
-    placeholder: { type: String, default: null },
-    help: { type: String, default: null }
-  },
-
-  data: () => ({}),
-
-  watch: {},
 
   mounted () {
     this.$emit('input', !!this.form[name])
   },
-
-  created () {},
-
-  methods: {}
 }
 </script>

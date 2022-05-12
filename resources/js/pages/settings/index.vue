@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-wrap mt-6 md:max-w-3xl w-full md:mx-auto">
     <div class="w-full md:w-1/3 md:pr-4">
-      <card :padding="false" class="bg-gray-50 dark:bg-notion-dark-light">
+      <card :padding="false" class="bg-gray-50 dark:bg-gray-800">
         <ul>
           <li v-for="tab in tabs" :key="tab.route">
             <router-link :to="{ name: tab.route }"
@@ -20,11 +20,6 @@
               <template v-else-if="tab.route == 'settings.account'">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7a4 4 0 11-8 0 4 4 0 018 0zM9 14a6 6 0 00-6 6v1h12v-1a6 6 0 00-6-6zM21 12h-6" />
-                </svg>
-              </template>
-              <template v-else-if="tab.route == 'settings.workspaces'">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                 </svg>
               </template>
               <template v-else-if="tab.route == 'settings.password'">
@@ -79,10 +74,6 @@ export default {
   computed: {
     tabs () {
       return [
-        {
-          name: 'Workspaces',
-          route: 'settings.workspaces'
-        },
         {
           name: this.$t('profile'),
           route: 'settings.profile'

@@ -1,14 +1,14 @@
 <template>
-  <div class="relative mb-3">
-    <label v-if="label" class="text-gray-700 dark:text-gray-300 font-bold"
-           :class="{'uppercase text-xs':uppercaseLabels, 'text-sm':!uppercaseLabels}"
+  <div class="relative" :class="marginBottom">
+    <label v-if="label"
+           :class="[theme.default.label,{'uppercase text-xs':uppercaseLabels, 'text-sm':!uppercaseLabels}]"
     >
       {{ label }}
       <span v-if="required" class="text-red-500 required-dot">*</span>
     </label>
     <span class="inline-block w-full rounded-md shadow-sm">
       <button type="button" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label"
-              class="cursor-pointer relative w-full rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 dark:bg-notion-dark-light dark:text-gray-300 dark:placeholder-gray-600 shadow-sm text-base focus:outline-none focus:ring-2 focus:border-transparent"
+              class="cursor-pointer relative w-full" :class="theme.default.input"
               :style="inputStyle" @click.prevent="showUploadModal=true"
       >
         <div v-if="currentUrl==null" class="h-6 text-gray-600 dark:text-gray-400">
@@ -36,7 +36,7 @@
       </button>
     </span>
     <small v-if="help" class="text-gray-400 dark:text-gray-500" v-text="help" />
-    <has-error :form="form" :field="name" />
+    <has-error v-if="form" :form="form" :field="name" />
 
     <!--  Modal  -->
     <modal :show="showUploadModal" @close="showUploadModal=false">
@@ -54,14 +54,7 @@
               @drop.prevent="onUploadDropEvent($event)"
             >
               <div v-if="loading" class="text-gray-600 dark:text-gray-400">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 animate-spin mx-auto m-10" fill="none"
-                     viewBox="0 0 24 24"
-                     stroke="currentColor"
-                >
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                  />
-                </svg>
+                <loader class="h-6 w-6 mx-auto m-10" />
                 <p class="text-center mt-6">
                   Uploading your file...
                 </p>
@@ -111,20 +104,14 @@
 <script>
 import Modal from '../Modal'
 import Form from 'vform'
+import inputMixin from '~/mixins/forms/input'
 
 export default {
   name: 'ImageInput',
   components: { Modal },
+  mixins: [inputMixin],
   props: {
-    endpoint: { type: String, required: true },
-    label: { type: String, default: null },
-    help: { type: String, default: null },
-    required: { type: Boolean, default: false },
-    form: { type: Object, required: true },
-    name: { type: String, required: true },
-    placeholder: { type: String, default: null },
-    color: { type: String, default: '#3B82F6' },
-    uppercaseLabels: { type: Boolean, default: true }
+    endpoint: { type: String, required: true }
   },
 
   data: () => ({
@@ -137,13 +124,8 @@ export default {
   }),
 
   computed: {
-    inputStyle () {
-      return {
-        '--tw-ring-color': this.color
-      }
-    },
     currentUrl () {
-      return this.form[this.name]
+      return this.compVal
     }
   },
 
@@ -154,7 +136,7 @@ export default {
 
   methods: {
     clearUrl () {
-      this.$set(this.form, this.name, null)
+      this.compVal = null
     },
     onUploadDragoverEvent (e) {
       this.uploadDragoverEvent = true
@@ -186,11 +168,11 @@ export default {
       })
       this.loading = true
       assetForm.post(this.endpoint).then((response) => {
-        this.$set(this.form, this.name, response.data.url)
+        this.compVal = response.data.url
         this.showUploadModal = false
         this.loading = false
       }).catch((error) => {
-        this.$set(this.form, this.name, null)
+        this.compVal = null
         this.showUploadModal = false
         this.loading = false
       })
